@@ -6,16 +6,19 @@ import SearchBar from './SearchBar.js';
 import axios from 'axios';
 
 class App extends Component {
-  state = {table: [], displayedItems: []};
+  state = {table: [], searchTerm: ''};
 
   componentDidMount() {
     axios.get(
       'https://secure.toronto.ca/cc_sr_v1/data/swm_waste_wizard_APR?limit=1000'
     ).then(response => {
+      const keywordSet = new Set();
       const table = response.data.reduce((accumulator, currItem) => {
         const keywords = currItem.keywords
           .split(', ')
-          .map(word => ({keyword: word, bin: currItem.category}));
+          .filter(word =>
+            (keywordSet.has(word) ? false : Boolean(keywordSet.add(word)))
+          ).map(word => ({keyword: word, bin: currItem.category}));
         return [...accumulator, ...keywords];
       }, []);
       this.setState({table});
@@ -24,23 +27,18 @@ class App extends Component {
     });
   }
 
-  searchTable = (event) => {
-    console.log({event});
-    const {value} = event.target;
-    const {table} = this.state;
-    console.log(value, table);
-    const displayedItems = table.filter(
-      item => RegExp(`\\b${value}\\b`).test(item.keyword));
-    this.setState({displayedItems});
-  }
+  searchTable = (event) => {this.setState({searchTerm: event.target.value})};
 
   render() {
-    const {displayedItems} = this.state;
+    const {table, searchTerm} = this.state;
+    const displayedItems = table
+      .filter(item => RegExp(`\\b${searchTerm}\\b`).test(item.keyword));
+
     return (
       <div className="App">
-        <input onChange={this.searchTable} />
+        <SearchBar value={searchTerm} onChange={this.searchTable} />
         <div>
-          {this.state.displayedItems.map(item =>
+          {displayedItems.map(item =>
             (<Item
               key={item.keyword.replace(/ /g, '-')}
               keyword={item.keyword}
