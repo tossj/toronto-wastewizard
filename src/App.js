@@ -35,16 +35,24 @@ class App extends Component {
       .filter(item => RegExp(`\\b${searchTerm}\\b`).test(item.keyword));
 
     return (
-      <div className="App">
-        <SearchBar value={searchTerm} onChange={this.searchTable} />
-        <div>
+      <div className="App-container">
+        <header className="App-header">
+          <div className="App-header-item">City of Toronto Waste Wizard</div>
+          <SearchBar value={searchTerm} onChange={this.searchTable}
+            placeholder="Search how items are disposed here" />
+          <div className="App-header-item">About</div>
+        </header>
+        <main className="App-main">
           {displayedItems.map(item =>
             (<Item
               key={item.keyword.replace(/ /g, '-')}
               keyword={item.keyword}
               bin={item.bin} />)
           )}
-        </div>
+        </main>
+        <footer className="App-footer">
+          <caption className="App-header-item">This website is not associated with the City of Toronto.</caption>
+        </footer>
       </div>
     );
   }
