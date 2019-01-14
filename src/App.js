@@ -45,13 +45,13 @@ class App extends Component {
         <main className="App-main">
           {displayedItems.map(item =>
             (<Item
-              key={item.keyword.replace(/ /g, '-')}
+              key={item.keyword.replace(/ /g, '+')}
               keyword={item.keyword}
               bin={item.bin} />)
           )}
         </main>
         <footer className="App-footer">
-          <caption className="App-header-item">This website is not associated with the City of Toronto.</caption>
+          <small className="App-header-item">This website is not associated with the City of Toronto.</small>
         </footer>
       </div>
     );
