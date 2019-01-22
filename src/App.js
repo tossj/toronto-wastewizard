@@ -25,9 +25,20 @@ class App extends Component {
     }).catch(error => {
       console.err(error);
     });
+
+    if (window.location.hash) {
+      const searchTerm = decodeURIComponent(window.location.hash.substring(1));
+      this.setState({searchTerm});
+    }
   }
 
-  searchTable = (event) => {this.setState({searchTerm: event.target.value})};
+  searchTable = (event) => {
+    window.location.hash = event.target.value
+      ? `#${encodeURIComponent(event.target.value)}`
+      : '';
+
+    this.setState({searchTerm: event.target.value});
+  };
 
   render() {
     const {table, searchTerm} = this.state;
